@@ -26,4 +26,8 @@ describe('Fixnum#numbers_to_words') do
   it("handles a three digit number that ends in zero") do
     expect(150.numbers_to_words()).to(eq("one hundred fifty"))
   end
+
+  it("returns a written number for a three digit number") do
+    expect(9267.numbers_to_words()).to(eq("nine thousand two hundred sixty seven"))
+  end
 end
