@@ -27,7 +27,11 @@ describe('Fixnum#numbers_to_words') do
     expect(150.numbers_to_words()).to(eq("one hundred fifty"))
   end
 
-  it("returns a written number for a three digit number") do
+  it("returns a written number for a four digit number") do
     expect(9267.numbers_to_words()).to(eq("nine thousand two hundred sixty seven"))
+  end
+
+  it("returns a written number for a five digit number below twenty thousand") do
+    expect(18526.numbers_to_words()).to(eq("eighteen thousand five hundred twenty six"))
   end
 end
