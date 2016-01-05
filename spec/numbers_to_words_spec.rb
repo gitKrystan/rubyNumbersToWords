@@ -18,4 +18,12 @@ describe('Fixnum#numbers_to_words') do
   it("returns a written number for a two digit number") do
     expect(40.numbers_to_words()).to(eq("forty"))
   end
+
+  it("returns a written number for a three digit number") do
+    expect(178.numbers_to_words()).to(eq("one hundred seventy eight"))
+  end
+
+  it("handles a three digit number that ends in zero") do
+    expect(150.numbers_to_words()).to(eq("one hundred fifty"))
+  end
 end

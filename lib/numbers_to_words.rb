@@ -16,6 +16,8 @@ class Fixnum
       ones_to_words
     elsif (self < 100)
       tens_to_words(digits, words)
+    elsif (self < 1000)
+      hundreds_to_words(digits, words)
     else
       "under construction"
     end
@@ -29,5 +31,11 @@ class Fixnum
     words.push(tens.fetch(digits[0]))
     words.push(ones.fetch(digits[1])) unless digits[1] == 0
     words.join(" ")
+  end
+
+  define_method(:hundreds_to_words) do |digits, words|
+    words.push(digits.shift.ones_to_words() + " hundred")
+    tens_to_words(digits, words)
+
   end
 end
