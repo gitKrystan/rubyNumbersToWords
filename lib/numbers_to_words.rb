@@ -1,57 +1,63 @@
 class Fixnum
-  define_method(:numbers_to_words) do
-    digits = self.to_s.split('').map { |digit| digit.to_i }
-    words = []
-    if (self < 100)
-      digits.ones_and_tens(words)
-    elsif (self < 1000)
-      digits.hundreds_to_words(words)
-    elsif (self < 100000)
-      digits.thousands_to_words(words)
-    elsif (self < 1000000)
-      digits.hundredthousands_to_words(words)
-    else
-      "under construction"
-    end
-  end
-end
+  triplet_names = ["", " thousand ", " million ", " billion ", " trillion "]
 
-class Array
-  ones = {0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+  words_to_nineteen = {0 => "", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
           6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
           11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen",
           15 => "fifteen", 16 => "sixteen", 17 => "seventeen", 18 => "eighteen",
           19 => "nineteen"}
 
-  tens = {2 => "twenty", 3 => "thirty", 4 => "forty", 5 => "fifty",
+  words_for_tens = {0 => "", 1 => "ten", 2 => "twenty", 3 => "thirty", 4 => "forty", 5 => "fifty",
           6 => "sixty", 7 => "seventy", 8 => "eighty", 9 => "ninety"}
 
-  define_method(:ones_and_tens) do |words|
-    tens_place = self.join.to_i
-    if tens_place > 19
-      words.push(tens.fetch(self[0]))
-      words.push(ones.fetch(self[1])) unless self[1] == 0
-    else
-      words.push(ones.fetch(tens_place)) unless self[1] == 0
+  define_method(:numbers_to_words) do |number_words = " ", triplet_number = 0|
+    if triplet_number == 0 && self == 0
+      return "zero"
     end
-    words.join(" ")
+
+    number_as_array = self.to_s.split("")
+
+    last_triplet = number_as_array
+      .slice!([number_as_array.length, 3].min * -1,3)
+      .join()
+      .to_i
+
+    last_triplet_in_words = last_triplet.triplet_to_words()
+    triplet_modifier = ""
+
+    if (last_triplet_in_words.length > 0)
+      triplet_modifier = triplet_names[triplet_number]
+    end
+
+    new_number_words = last_triplet_in_words \
+      + triplet_modifier \
+      + number_words
+
+    if (number_as_array.length == 0)
+      return new_number_words.strip()
+    end
+
+    return number_as_array
+      .join()
+      .to_i()
+      .numbers_to_words(new_number_words, triplet_number + 1)
   end
 
-  define_method(:hundreds_to_words) do |words|
-    self.slice!(0, self.length - 2).ones_and_tens(words)
-    words.push("hundred")
-    self.ones_and_tens(words)
-  end
+  define_method(:triplet_to_words) do
+    triplet_digits = self.to_s.rjust(3,"0").split('').map { |digit| digit.to_i }
+    triplet_words = ""
+    if self < 20
+      triplet_words += words_to_nineteen[self]
+    else
+      triplet_words += words_for_tens[triplet_digits[1]] \
+        + " " + words_to_nineteen[triplet_digits[2]]
+    end
 
-  define_method(:thousands_to_words) do |words|
-    self.slice!(0, self.length - 3).ones_and_tens(words)
-    words.push("thousand")
-    self.hundreds_to_words(words)
-  end
+    if self >= 100
+      triplet_words = words_to_nineteen[triplet_digits[0]] \
+        + " hundred " + triplet_words
+    end
 
-  define_method(:hundredthousands_to_words) do |words|
-    self.slice!(0, self.length - 3).hundreds_to_words(words)
-    words.push("thousand")
-    self[0] == 0 ? self.slice(-2,2).ones_and_tens(words) : self.hundreds_to_words(words)
+    return triplet_words.strip()
   end
 end
