@@ -42,4 +42,8 @@ describe('Fixnum#numbers_to_words') do
   it("returns a written number for a six digit number") do
     expect(120350.numbers_to_words()).to(eq("one hundred twenty thousand three hundred fifty"))
   end
+
+  it("returns a written number for a six digit number with zero hundreds") do
+    expect(600037.numbers_to_words()).to(eq("six hundred thousand thirty seven"))
+  end
 end
