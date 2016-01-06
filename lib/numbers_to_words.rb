@@ -8,6 +8,8 @@ class Fixnum
       digits.hundreds_to_words(words)
     elsif (self < 100000)
       digits.thousands_to_words(words)
+    elsif (self < 1000000)
+      digits.hundredthousands_to_words(words)
     else
       "under construction"
     end
@@ -43,6 +45,12 @@ class Array
 
   define_method(:thousands_to_words) do |words|
     self.slice!(0, self.length - 3).ones_and_tens(words)
+    words.push("thousand")
+    self.hundreds_to_words(words)
+  end
+
+  define_method(:hundredthousands_to_words) do |words|
+    self.slice!(0, self.length - 3).hundreds_to_words(words)
     words.push("thousand")
     self.hundreds_to_words(words)
   end
