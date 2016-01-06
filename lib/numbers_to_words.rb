@@ -31,8 +31,13 @@ class Array
   end
 
   define_method(:tens_to_words) do |words|
-    words.push(tens.fetch(self[0]))
-    words.push(ones.fetch(self[1])) unless self[1] == 0
+    tens_place = self.join.to_i
+    if tens_place > 19
+      words.push(tens.fetch(self[0]))
+      words.push(ones.fetch(self[1])) unless self[1] == 0
+    else
+      words.push(ones.fetch(tens_place))
+    end
     words.join(" ")
   end
 
@@ -42,7 +47,8 @@ class Array
   end
 
   define_method(:thousands_to_words) do |words|
-    words.push(self.slice!(0, self.length - 3).ones_to_words() + " thousand")
+    self.slice!(0, self.length - 3).tens_to_words(words)
+    words.push("thousand")
     self.hundreds_to_words(words)
   end
 end

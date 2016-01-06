@@ -34,4 +34,8 @@ describe('Fixnum#numbers_to_words') do
   it("returns a written number for a five digit number below twenty thousand") do
     expect(18526.numbers_to_words()).to(eq("eighteen thousand five hundred twenty six"))
   end
+
+  it("returns a written number for a five digit number above twenty thousand") do
+    expect(99999.numbers_to_words()).to(eq("ninety nine thousand nine hundred ninety nine"))
+  end
 end
